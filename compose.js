@@ -14,7 +14,7 @@ class Compose {
     this.docker = dockerode;
 
     if (file === undefined) {
-      throw new Error('please specify a file and a project name');
+      throw new Error('please specify a file');
     }
 
     this.file = file;
@@ -28,7 +28,7 @@ class Compose {
     this.projectName = this.recipe.name || projectName;
 
     if (this.projectName === undefined) {
-      throw new Error('please specify a file and a project name');
+      throw new Error('please specify a project name');
     }
   }
 
