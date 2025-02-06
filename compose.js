@@ -13,17 +13,22 @@ class Compose {
   constructor(dockerode, file, projectName) {
     this.docker = dockerode;
 
-    if (file === undefined || projectName === undefined) {
+    if (file === undefined) {
       throw new Error('please specify a file and a project name');
     }
 
     this.file = file;
-    this.projectName = projectName;
 
     try {
       this.recipe = yaml.load(fs.readFileSync(file, 'utf8'));
     } catch (e) {
       throw e;
+    }
+
+    this.projectName = this.recipe.name || projectName;
+
+    if (this.projectName === undefined) {
+      throw new Error('please specify a file and a project name');
     }
   }
 
