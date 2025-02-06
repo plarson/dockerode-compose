@@ -13,7 +13,7 @@ module.exports = {
   'compose': compose,
   'compose_complex': compose_complex,
   'compose_build': compose_build,
-  'compose_named': compose_named
+  'compose_named': compose_named,
   'compose_build': compose_build,
   'compose_build_context': compose_build_context
 }
