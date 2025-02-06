@@ -1,0 +1,6 @@
+name: custom_project_name
+
+services:
+  frontend:
+    container_name: custom_project_name_frontend
+    build: ./build_things

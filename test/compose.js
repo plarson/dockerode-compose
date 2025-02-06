@@ -4,6 +4,7 @@ const expect = require('chai').expect,
 var compose = require('./spec_helper').compose;
 var compose_complex = require('./spec_helper').compose_complex;
 var compose_build = require('./spec_helper').compose_build;
+var compose_named = require('./spec_helper').compose_named;
 var docker = require('./spec_helper').docker;
 
 describe('compose', function () {
@@ -163,6 +164,57 @@ describe('compose', function () {
         expect(listVolumes.Volumes).to.be.empty
         expect(listVolumes.Warnings).to.be.null
         let listNetworks = await docker.listNetworks({ 'filters': {"label":[`com.docker.compose.project=${compose.projectName}`]}})
+        expect(listNetworks).to.be.empty
+        done();
+      })();
+    });
+  });
+
+  describe('#up_build_named', function () {
+    it("should do compose up example with build", function (done) {
+      this.timeout(300000);
+      (async () => {
+          var report = await compose_named.up();
+          expect(report.services).to.be.ok;
+          done();
+      })();
+    });
+    it("should do compose up example with build(verbose)", function (done) {
+      this.timeout(300000);
+      (async () => {
+        var report = await compose_named.up({ 'verbose': true });
+        expect(report.services).to.be.ok;
+        done();
+      })();
+    });
+    afterEach('clean up', function (done) {
+      this.timeout(60000);
+      (async () => {
+        await compose_named.down({ volumes: true });
+        done();
+      })();
+    });
+  });
+
+  describe('#down_build_named', function () {
+    beforeEach('bring up', function (done) {
+      this.timeout(300000);
+      (async () => {
+        await compose_named.up();
+        done();
+      })();
+    });
+    it("should do compose down example with build", function (done) {
+      this.timeout(60000);
+      (async () => {
+        await compose_named.down({volumes: true});
+        let projectName = compose_named.recipe.name || compose_named.projectName;
+        let listContainers = await docker.listContainers({ 'all': true, 'filters': {"label":[`com.docker.compose.project=${projectName}`]}});
+        expect(listContainers).to.be.empty
+        let listVolumes  = await docker.listVolumes({ 'filters': {"label":[`com.docker.compose.project=${projectName}`]}})
+        expect(listVolumes.Volumes).to.be.empty
+        expect(listVolumes.Warnings).to.be.null
+        let listNetworks = await docker.listNetworks({ 'filters': {"label":[`com.docker.compose.project=${projectName}`]}})
         expect(listNetworks).to.be.empty
         done();
       })();
